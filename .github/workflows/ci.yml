@@ -12,10 +12,17 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
+          browser: 'Replay Firefox'
           # check the spec types
           build: npm run lint
           # start the application before running Cypress
           start: npm start
-          # pass the grep tag to run only some tests
-          # https://github.com/cypress-io/cypress-grep
-          env: grepTags=@sanity
+        env:
+          RECORD_ALL_CONTENT: 1
+          RECORD_REPLAY_METADATA_FILE: /tmp/replay-metadata
+
+      - name: Upload replays ▶️
+        if: ${{ always() }}
+        uses: replayio/action-upload@v0.4.3
+        with:
+          api-key: ${{ secrets.RECORD_REPLAY_API_KEY }}

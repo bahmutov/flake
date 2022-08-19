@@ -1,5 +1,10 @@
 name: ci
-on: [push]
+on: 
+  schedule:
+  # Hammer the backend by running this every 5mins 😈
+    - cron: '*/5 * * * *'
+  push:
+
 jobs:
   tests:
     runs-on: ubuntu-20.04

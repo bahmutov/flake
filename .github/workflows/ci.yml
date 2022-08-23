@@ -7,6 +7,7 @@ on:
 jobs:
   tests:
     strategy:
+      fail-fast: false
       matrix:
         record: ["record", "no-record"]
     runs-on: ubuntu-20.04

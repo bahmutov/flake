@@ -6,11 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  tests:
-    strategy:
-      fail-fast: false
-      matrix:
-        record: ["record", "no-record"]
+  tests-record:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -31,7 +27,34 @@ jobs:
           RECORD_REPLAY_WEBHOOK_URL: ${{ secrets.RECORD_REPLAY_WEBHOOK_URL }}
           RECORD_ALL_CONTENT: 1
           RECORD_REPLAY_METADATA_FILE: /tmp/replay-metadata
-          RECORD_REPLAY_DRIVER: ${{ matrix.record == 'no-record' && '/tmp/not-here' || '' }}
+      - name: Upload replays ▶️
+        if: ${{ always() }}
+        uses: replayio/action-upload@v0.4.3
+        with:
+          api-key: rwk_3gdLWqm8nrWA7jbPG8aiADVQ7moc0PYGdAEdnKAfzbM
+          public: true
+  tests-no-record:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      # Install NPM dependencies, cache them correctly
+      # and run all Cypress tests
+      # https://github.com/cypress-io/github-action
+      - name: Cypress run
+        uses: cypress-io/github-action@v4
+        with:
+          browser: 'Replay Firefox'
+          # check the spec types
+          build: npm run lint
+          # start the application before running Cypress
+          start: npm start
+        env:
+          RECORD_REPLAY_TEST_METRICS: 1
+          RECORD_REPLAY_WEBHOOK_URL: ${{ secrets.RECORD_REPLAY_WEBHOOK_URL }}
+          RECORD_ALL_CONTENT: 1
+          RECORD_REPLAY_METADATA_FILE: /tmp/replay-metadata
+          RECORD_REPLAY_DRIVER: /tmp/not-here
       - name: Upload replays ▶️
         if: ${{ always() }}
         uses: replayio/action-upload@v0.4.3

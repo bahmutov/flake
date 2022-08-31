@@ -17,7 +17,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
-          browser: 'Replay Firefox'
+          browser: 'Replay Chromium'
           # check the spec types
           build: npm run lint
           # start the application before running Cypress
@@ -44,7 +44,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
-          browser: 'Replay Firefox'
+          browser: 'Replay Chromium'
           # check the spec types
           build: npm run lint
           # start the application before running Cypress

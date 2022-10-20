@@ -75,7 +75,7 @@ jobs:
   original:
     runs-on: ubuntu-20.04
     outputs:
-     duration: ${{steps.end.outputs.time}} - ${{steps.start.outputs.time}}
+     duration: ${{steps.end.outputs.duration}}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -92,9 +92,9 @@ jobs:
           build: npm run lint
           # start the application before running Cypress
           start: npm start
-      - name: Set test end
+      - name: Set duration in output
         id: end
-        run: echo "time=`date +%s`" >> $GITHUB_OUTPUT
+        run: echo "duration=$((`date +%s` - ${{ steps.start.outputs.time }}))" >> $GITHUB_OUTPUT
   upload-benchmarks:
     name: Upload benchmarks
     runs-on: ubuntu-latest

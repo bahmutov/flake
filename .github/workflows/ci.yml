@@ -1,6 +1,7 @@
 name: ci
 env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+  PROJECT_NAME: flake
 on: 
   schedule:
     - cron: '0 0 * * *'
@@ -74,7 +75,7 @@ jobs:
   original:
     runs-on: ubuntu-20.04
     outputs:
-     duration: $(( ${{steps.end.outputs.time}} - ${{steps.start.outputs.time}} ))
+     duration: ${{steps.end.outputs.time}} - ${{steps.start.outputs.time}}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -100,6 +101,12 @@ jobs:
     needs: [record, original]
     steps:
       - run: |
-          echo "Test Duration: ${{ needs.original.outputs.duration }}"
+          echo "Original Duration: ${{ needs.original.outputs.duration }}"
+          echo "Total Recording Duration: ${{ needs.original.outputs.duration }}"
           echo "Record Duration: ${{ needs.record.outputs.recordDuration }}"
           echo "Upload Duration: ${{ needs.record.outputs.uploadDuration }}"
+      - name: Fetch API Data 📦
+        uses: JamesIves/fetch-api-data-action@v2
+        with:
+          endpoint: "https://telemetry.replay.io"
+          configuration: '{ "method": "POST", "body": {"event": "Webhook", "source": "metrics", "name": "action-finished", "project": "flake", "originalDuration": "${{ needs.original.outputs.duration }}", "recordDuration": "${{ needs.record.outputs.recordDuration }}", "uploadDuration": "${{ needs.record.outputs.uploadDuration }}"} }'

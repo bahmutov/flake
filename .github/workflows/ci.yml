@@ -6,14 +6,21 @@ on:
   workflow_dispatch:
 
 jobs:
-  cypress-record:
+  record:
     runs-on: ubuntu-20.04
+    outputs:
+     recordDuration: ${{ `date +%s` - steps.test.outputs.start }}
+     uploadDuration: ${{ `date +%s` - steps.upload.outputs.start }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
       # https://github.com/cypress-io/github-action
+      - name: Set test start
+        id: test
+        run: |
+          printf '::set-output name=start::date +%s\n'
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
@@ -28,13 +35,17 @@ jobs:
           RECORD_ALL_CONTENT: 1
           RECORD_REPLAY_METADATA_FILE: /tmp/replay-metadata
           RECORD_REPLAY_METADATA_TEST_RUN_TITLE: "help i'm trapped in a test run title making factory"
+      - name: Set upload start
+        id: upload
+        run: |
+          printf '::set-output name=start::date +%s\n'
       - name: Upload replays ▶️
         if: ${{ always() }}
         uses: replayio/action-upload@v0.4.3
         with:
           api-key: rwk_3gdLWqm8nrWA7jbPG8aiADVQ7moc0PYGdAEdnKAfzbM
           public: true
-  cypress-no-record:
+  no-record:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -57,14 +68,20 @@ jobs:
           RECORD_REPLAY_METADATA_FILE: /tmp/replay-metadata
           RECORD_REPLAY_DRIVER: /tmp/not-here
           RECORD_REPLAY_METADATA_TEST_RUN_TITLE: "help i'm trapped in a test run title making factory"
-  cypress-original:
+  original:
     runs-on: ubuntu-20.04
+    outputs:
+     testDuration: ${{ `date +%s` - steps.test.outputs.start }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
       # https://github.com/cypress-io/github-action
+      - name: Set test start
+        id: test
+        run: |
+          printf '::set-output name=start::date +%s\n'
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
@@ -72,4 +89,14 @@ jobs:
           build: npm run lint
           # start the application before running Cypress
           start: npm start
+  upload-benchmarks:
+    name: Upload benchmarks
+    runs-on: ubuntu-latest
+    needs: [record, original]
+    steps:
+      - run: |
+          echo "Test Duration: ${{ needs.original.outputs.testDuration }}"
+          echo "Record Duration: ${{ needs.record.outputs.recordDuration }}"
+          echo "Upload Duration: ${{ needs.record.outputs.uploadDuration }}"
+
 

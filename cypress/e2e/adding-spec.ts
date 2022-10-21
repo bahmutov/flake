@@ -94,6 +94,10 @@ describe('TodoMVC', function () {
       cy.get('.main').should('be.visible')
       cy.get('.footer').should('be.visible')
     })
+
+    it('should fail on this test', function () {
+      cy.contains("Sorry, something went wrong").should('exist');
+    })
   })
 
   context('Adds items (spy example)', () => {

@@ -12,8 +12,8 @@ jobs:
   record:
     runs-on: ubuntu-20.04
     outputs:
-     recordDuration: $(( ${{steps.uploadStart.outputs.time}} - ${{steps.testStart.outputs.time}} ))
-     uploadDuration: $(( ${{steps.uploadEnd.outputs.time}} - ${{steps.uploadStart.outputs.time}} ))
+      recordDuration: ${{steps.end.outputs.recordDuration}}
+      uploadDuration: ${{steps.end.outputs.uploadDuration}}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -21,7 +21,7 @@ jobs:
       # and run all Cypress tests
       # https://github.com/cypress-io/github-action
       - name: Set test start
-        id: testStart
+        id: recordStart
         run: echo "time=`date +%s`" >> $GITHUB_OUTPUT
       - name: Cypress run
         uses: cypress-io/github-action@v4
@@ -46,9 +46,11 @@ jobs:
         with:
           api-key: rwk_3gdLWqm8nrWA7jbPG8aiADVQ7moc0PYGdAEdnKAfzbM
           public: true
-      - name: Set upload end
-        id: uploadEnd
-        run: echo "time=`date +%s`" >> $GITHUB_OUTPUT      
+      - name: Set duration in output
+        id: end
+        run: | 
+          echo "recordDuration=$((${{ steps.uploadStart.outputs.time }} - ${{ steps.recordStart.outputs.time }}))" >> $GITHUB_OUTPUT
+          echo "uploadDuration=$((`date +%s` - ${{ steps.uploadStart.outputs.time }}))" >> $GITHUB_OUTPUT
   no-record:
     runs-on: ubuntu-20.04
     steps:
@@ -102,7 +104,6 @@ jobs:
     steps:
       - run: |
           echo "Original Duration: ${{ needs.original.outputs.duration }}"
-          echo "Total Recording Duration: ${{ needs.original.outputs.duration }}"
           echo "Record Duration: ${{ needs.record.outputs.recordDuration }}"
           echo "Upload Duration: ${{ needs.record.outputs.uploadDuration }}"
       - name: Fetch API Data 📦

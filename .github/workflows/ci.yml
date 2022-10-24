@@ -21,6 +21,7 @@ jobs:
       # and run all Cypress tests
       # https://github.com/cypress-io/github-action
       - name: Set test start
+        if: always()
         id: recordStart
         run: echo "time=`date +%s`" >> $GITHUB_OUTPUT
       - name: Cypress run
@@ -38,6 +39,7 @@ jobs:
           RECORD_REPLAY_METADATA_FILE: /tmp/replay-metadata
           RECORD_REPLAY_METADATA_TEST_RUN_TITLE: "help i'm trapped in a test run title making factory"
       - name: Set upload start
+        if: always()
         id: uploadStart
         run: echo "time=`date +%s`" >> $GITHUB_OUTPUT
       - name: Upload replays ▶️
@@ -48,6 +50,7 @@ jobs:
           public: true
       - name: Set duration in output
         id: end
+        if: always()
         run: | 
           echo "recordDuration=$((${{ steps.uploadStart.outputs.time }} - ${{ steps.recordStart.outputs.time }}))" >> $GITHUB_OUTPUT
           echo "uploadDuration=$((`date +%s` - ${{ steps.uploadStart.outputs.time }}))" >> $GITHUB_OUTPUT
@@ -85,6 +88,7 @@ jobs:
       # and run all Cypress tests
       # https://github.com/cypress-io/github-action
       - name: Set test start
+        if: always()
         id: start
         run: echo "time=`date +%s`" >> $GITHUB_OUTPUT
       - name: Cypress run
@@ -95,12 +99,14 @@ jobs:
           # start the application before running Cypress
           start: npm start
       - name: Set duration in output
+        if: always()
         id: end
         run: echo "duration=$((`date +%s` - ${{ steps.start.outputs.time }}))" >> $GITHUB_OUTPUT
   upload-benchmarks:
     name: Upload benchmarks
     runs-on: ubuntu-latest
     needs: [record, original]
+    if: always()
     steps:
       - run: |
           echo "Original Duration: ${{ needs.original.outputs.duration }}"

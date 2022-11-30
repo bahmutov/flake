@@ -39,6 +39,7 @@ jobs:
           RECORD_ALL_CONTENT: 1
           RECORD_REPLAY_METADATA_FILE: /tmp/replay-metadata
           RECORD_REPLAY_METADATA_TEST_RUN_TITLE: "help i'm trapped in a test run title making factory"
+          CYPRESS_NO_COMMAND_LOG: 1
       - name: Cypress run 2
         if: always()
         uses: cypress-io/github-action@v4
@@ -54,6 +55,7 @@ jobs:
           RECORD_ALL_CONTENT: 1
           RECORD_REPLAY_METADATA_FILE: /tmp/replay-metadata
           RECORD_REPLAY_METADATA_TEST_RUN_TITLE: "help i'm trapped in a test run title making factory"
+          CYPRESS_NO_COMMAND_LOG: 1
       - name: Cypress run 3
         if: always()
         uses: cypress-io/github-action@v4
@@ -69,6 +71,7 @@ jobs:
           RECORD_ALL_CONTENT: 1
           RECORD_REPLAY_METADATA_FILE: /tmp/replay-metadata
           RECORD_REPLAY_METADATA_TEST_RUN_TITLE: "help i'm trapped in a test run title making factory"
+          CYPRESS_NO_COMMAND_LOG: 1
       - name: Set upload start
         if: always()
         id: uploadStart

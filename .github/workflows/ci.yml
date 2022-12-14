@@ -24,39 +24,7 @@ jobs:
         if: always()
         id: recordStart
         run: echo "time=`date +%s`" >> $GITHUB_OUTPUT
-      - name: Cypress run 1
-        if: always()
-        uses: cypress-io/github-action@v4
-        with:
-          browser: 'Replay Chromium'
-          # check the spec types
-          build: npm run lint
-          # start the application before running Cypress
-          start: npm start
-        env:
-          RECORD_REPLAY_TEST_METRICS: 1
-          RECORD_REPLAY_WEBHOOK_URL: ${{ secrets.RECORD_REPLAY_WEBHOOK_URL }}
-          RECORD_ALL_CONTENT: 1
-          RECORD_REPLAY_METADATA_FILE: /tmp/replay-metadata
-          RECORD_REPLAY_METADATA_TEST_RUN_TITLE: "help i'm trapped in a test run title making factory"
-          CYPRESS_NO_COMMAND_LOG: 1
-      - name: Cypress run 2
-        if: always()
-        uses: cypress-io/github-action@v4
-        with:
-          browser: 'Replay Chromium'
-          # check the spec types
-          build: npm run lint
-          # start the application before running Cypress
-          start: npm start
-        env:
-          RECORD_REPLAY_TEST_METRICS: 1
-          RECORD_REPLAY_WEBHOOK_URL: ${{ secrets.RECORD_REPLAY_WEBHOOK_URL }}
-          RECORD_ALL_CONTENT: 1
-          RECORD_REPLAY_METADATA_FILE: /tmp/replay-metadata
-          RECORD_REPLAY_METADATA_TEST_RUN_TITLE: "help i'm trapped in a test run title making factory"
-          CYPRESS_NO_COMMAND_LOG: 1
-      - name: Cypress run 3
+      - name: Cypress run
         if: always()
         uses: cypress-io/github-action@v4
         with:
@@ -96,39 +64,7 @@ jobs:
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
       # https://github.com/cypress-io/github-action
-      - name: Cypress run 1
-        if: always()
-        uses: cypress-io/github-action@v4
-        with:
-          browser: 'Replay Chromium'
-          # check the spec types
-          build: npm run lint
-          # start the application before running Cypress
-          start: npm start
-        env:
-          RECORD_REPLAY_TEST_METRICS: 1
-          RECORD_REPLAY_WEBHOOK_URL: ${{ secrets.RECORD_REPLAY_WEBHOOK_URL }}
-          RECORD_ALL_CONTENT: 1
-          RECORD_REPLAY_METADATA_FILE: /tmp/replay-metadata
-          RECORD_REPLAY_DRIVER: /tmp/not-here
-          RECORD_REPLAY_METADATA_TEST_RUN_TITLE: "help i'm trapped in a test run title making factory"
-      - name: Cypress run 2
-        if: always()
-        uses: cypress-io/github-action@v4
-        with:
-          browser: 'Replay Chromium'
-          # check the spec types
-          build: npm run lint
-          # start the application before running Cypress
-          start: npm start
-        env:
-          RECORD_REPLAY_TEST_METRICS: 1
-          RECORD_REPLAY_WEBHOOK_URL: ${{ secrets.RECORD_REPLAY_WEBHOOK_URL }}
-          RECORD_ALL_CONTENT: 1
-          RECORD_REPLAY_METADATA_FILE: /tmp/replay-metadata
-          RECORD_REPLAY_DRIVER: /tmp/not-here
-          RECORD_REPLAY_METADATA_TEST_RUN_TITLE: "help i'm trapped in a test run title making factory"
-      - name: Cypress run 3
+      - name: Cypress run
         if: always()
         uses: cypress-io/github-action@v4
         with:
@@ -158,23 +94,7 @@ jobs:
         if: always()
         id: start
         run: echo "time=`date +%s`" >> $GITHUB_OUTPUT
-      - name: Cypress run 1
-        if: always()
-        uses: cypress-io/github-action@v4
-        with:
-          # check the spec types
-          build: npm run lint
-          # start the application before running Cypress
-          start: npm start
-      - name: Cypress run 2
-        if: always()
-        uses: cypress-io/github-action@v4
-        with:
-          # check the spec types
-          build: npm run lint
-          # start the application before running Cypress
-          start: npm start
-      - name: Cypress run 3
+      - name: Cypress run
         if: always()
         uses: cypress-io/github-action@v4
         with:

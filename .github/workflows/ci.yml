@@ -40,6 +40,15 @@ jobs:
           RECORD_REPLAY_METADATA_FILE: /tmp/replay-metadata
           RECORD_REPLAY_METADATA_TEST_RUN_TITLE: "help i'm trapped in a test run title making factory"
           CYPRESS_NO_COMMAND_LOG: 1
+      - id: set_var
+        if: always()
+        run: |
+          content=`cat duration.json`
+          echo "::set-output name=duration::$content"
+      - if: always()
+        run: |
+          cat duration.json
+          echo "${{fromJson(steps.set_var.outputs.duration)}}"
       - name: Set upload start
         if: always()
         id: uploadStart
@@ -54,7 +63,7 @@ jobs:
         id: end
         if: always()
         run: | 
-          echo "recordDuration=$((${{ steps.uploadStart.outputs.time }} - ${{ steps.recordStart.outputs.time }}))" >> $GITHUB_OUTPUT
+          echo "recordDuration=${{fromJson(steps.set_var.outputs.duration)}}" >> $GITHUB_OUTPUT
           echo "uploadDuration=$((`date +%s` - ${{ steps.uploadStart.outputs.time }}))" >> $GITHUB_OUTPUT
   no-record:
     runs-on: ubuntu-20.04

@@ -142,4 +142,4 @@ jobs:
         uses: JamesIves/fetch-api-data-action@v2
         with:
           endpoint: "https://telemetry.replay.io"
-          configuration: '{ "method": "POST", "body": {"event": "Webhook", "source": "metrics", "name": "action-finished", "project": "flake", "originalDuration": "${{ needs.original.outputs.originalDuration }}", "recordDuration": "${{ needs.record.outputs.recordDuration }}", "noRecordDuration": "${{ needs.no-record.outputs.noRecordDuration }}", "uploadDuration": "${{ needs.record.outputs.uploadDuration }}"} }'
+          configuration: '{ "method": "POST", "body": {"event": "Webhook", "source": "metrics", "name": "action-finished-2", "project": "flake", "originalDuration": "${{ needs.original.outputs.originalDuration }}", "recordDuration": "${{ needs.record.outputs.recordDuration }}", "noRecordDuration": "${{ needs.no-record.outputs.noRecordDuration }}", "uploadDuration": "${{ needs.record.outputs.uploadDuration }}"} }'

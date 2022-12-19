@@ -20,10 +20,6 @@ jobs:
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
       # https://github.com/cypress-io/github-action
-      - name: Set test start
-        if: always()
-        id: recordStart
-        run: echo "time=`date +%s`" >> $GITHUB_OUTPUT
       - name: Cypress run
         if: always()
         uses: cypress-io/github-action@v4
@@ -40,15 +36,12 @@ jobs:
           RECORD_REPLAY_METADATA_FILE: /tmp/replay-metadata
           RECORD_REPLAY_METADATA_TEST_RUN_TITLE: "help i'm trapped in a test run title making factory"
           CYPRESS_NO_COMMAND_LOG: 1
-      - id: set_var
+      - name: Parse test run duration
+        id: set_var
         if: always()
         run: |
           content=`cat duration.json`
           echo "::set-output name=duration::$content"
-      - if: always()
-        run: |
-          cat duration.json
-          echo "${{fromJson(steps.set_var.outputs.duration)}}"
       - name: Set upload start
         if: always()
         id: uploadStart

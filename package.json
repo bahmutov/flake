@@ -37,7 +37,7 @@
     "http-server": "14.1.1"
   },
   "devDependencies": {
-    "@replayio/cypress": "^0.4.4",
+    "@replayio/cypress": "^0.4.6",
     "cypress": "10.6.0",
     "cypress-grep": "3.0.2",
     "cypress-repeat": "2.3.3",

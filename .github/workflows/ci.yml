@@ -1,12 +1,23 @@
 name: ci
-env:
-  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-  PROJECT_NAME: flake
+
 on: 
   schedule:
     - cron: '0 * * * *'
   push:
   workflow_dispatch:
+    inputs:
+      chromium-runtime:
+        type: string
+        description: Custom Chromium Runtime
+      firefox-runtime:
+        type: string
+        description: Custom Firefox Runtime
+
+env:
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+  PROJECT_NAME: flake
+  RECORD_REPLAY_FIREFOX_DOWNLOAD_FILE: ${{ github.event.inputs.firefox-runtime }}
+  RECORD_REPLAY_CHROMIUM_DOWNLOAD_FILE: ${{ github.event.inputs.chromium-runtime }}
 
 jobs:
   record:

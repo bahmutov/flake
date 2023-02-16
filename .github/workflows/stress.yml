@@ -1,0 +1,51 @@
+name: mode-test
+
+on:
+  schedule:
+    - cron: '1 * * * *'
+  push:
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        options:
+          - record-on-retry
+          - stress
+          - diagnostics
+      chromium-runtime:
+        type: string
+        description: Custom Chromium Runtime
+      firefox-runtime:
+        type: string
+        description: Custom Firefox Runtime
+
+env:
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+  PROJECT_NAME: flake
+  RECORD_REPLAY_FIREFOX_DOWNLOAD_FILE: ${{ github.event.inputs.firefox-runtime }}
+  RECORD_REPLAY_CHROMIUM_DOWNLOAD_FILE: ${{ github.event.inputs.chromium-runtime }}
+
+jobs:
+  record:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      # Install NPM dependencies, cache them correctly
+      # and run all Cypress tests
+      # https://github.com/cypress-io/github-action
+      - name: Cypress run
+        if: always()
+        uses: cypress-io/github-action@v4
+        with:
+          command: npx @replayio/cypress run --mode ${{ inputs.mode || 'record-on-retry' }} --browser replay-chromium
+          # check the spec types
+          build: npm run lint
+          # start the application before running Cypress
+          start: npm start
+      - name: Upload replays ▶️
+        if: ${{ always() }}
+        uses: replayio/action-upload@v0.4.7
+        with:
+          api-key: rwk_3gdLWqm8nrWA7jbPG8aiADVQ7moc0PYGdAEdnKAfzbM
+          public: true

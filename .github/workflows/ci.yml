@@ -1,6 +1,6 @@
 name: ci
 
-on: 
+on:
   schedule:
     - cron: '0 * * * *'
   push:
@@ -35,7 +35,7 @@ jobs:
         if: always()
         uses: cypress-io/github-action@v4
         with:
-          browser: 'Replay Chromium'
+          browser: replay-chromium
           # check the spec types
           build: npm run lint
           # start the application before running Cypress
@@ -65,7 +65,7 @@ jobs:
       - name: Set duration in output
         id: end
         if: always()
-        run: | 
+        run: |
           echo "recordDuration=${{fromJson(steps.set_var.outputs.duration)}}" >> $GITHUB_OUTPUT
           echo "uploadDuration=$(((`date +%s` - ${{ steps.uploadStart.outputs.time }}) * 1000))" >> $GITHUB_OUTPUT
   no-record:
@@ -103,12 +103,12 @@ jobs:
       - name: Set duration in output
         id: end
         if: always()
-        run: | 
+        run: |
           echo "noRecordDuration=${{fromJson(steps.set_var.outputs.duration)}}" >> $GITHUB_OUTPUT
   original:
     runs-on: ubuntu-20.04
     outputs:
-     originalDuration: ${{steps.end.outputs.originalDuration}}
+      originalDuration: ${{steps.end.outputs.originalDuration}}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -153,5 +153,5 @@ jobs:
         # Don't upload metrics for pull requests, so our stats are clean
         if: ${{ github.ref_name == 'main' }}
         with:
-          endpoint: "https://telemetry.replay.io"
+          endpoint: 'https://telemetry.replay.io'
           configuration: '{ "method": "POST", "body": {"event": "Webhook", "source": "metrics", "name": "action-finished-2", "project": "flake", "originalDuration": "${{ needs.original.outputs.originalDuration }}", "recordDuration": "${{ needs.record.outputs.recordDuration }}", "noRecordDuration": "${{ needs.no-record.outputs.noRecordDuration }}", "uploadDuration": "${{ needs.record.outputs.uploadDuration }}"} }'

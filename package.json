@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "cypress run",
-    "test:replay-gecko": "RECORD_ALL_CONTENT=1 RECORD_REPLAY_METADATA_FILE=$(mktemp) cypress run --browser 'Replay Firefox'",
-    "test:replay": "RECORD_ALL_CONTENT=1 RECORD_REPLAY_METADATA_FILE=$(mktemp) cypress run --browser 'Replay Chromium'",
+    "test:replay-gecko": "RECORD_ALL_CONTENT=1 RECORD_REPLAY_METADATA_FILE=$(mktemp) cypress run --browser replay-firefox",
+    "test:replay": "RECORD_ALL_CONTENT=1 RECORD_REPLAY_METADATA_FILE=$(mktemp) cypress run --browser replay-chromium",
     "test:replay-custom": "RECORD_ALL_CONTENT=1 RECORD_REPLAY_METADATA_FILE=$(mktemp) cypress run --browser",
     "start": "http-server -p 8888 -c-1",
     "start-quiet": "http-server -p 8888 -c-1 --silent",

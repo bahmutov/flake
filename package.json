@@ -4,6 +4,7 @@
   "description": "Example Cypress tests going from page objects to app actions",
   "main": "index.js",
   "scripts": {
+    "start-and-test": "concurrently npm:start npm:test:replay",
     "test": "cypress run",
     "test:replay-gecko": "RECORD_ALL_CONTENT=1 RECORD_REPLAY_METADATA_FILE=$(mktemp) cypress run --browser replay-firefox",
     "test:replay": "RECORD_ALL_CONTENT=1 RECORD_REPLAY_METADATA_FILE=$(mktemp) cypress run --browser replay-chromium",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@replayio/cypress": "^1.0.5",
+    "concurrently": "^8.2.0",
     "cypress": "10.9",
     "cypress-grep": "3.0.2",
     "cypress-repeat": "2.3.3",

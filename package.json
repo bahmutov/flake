@@ -4,7 +4,7 @@
   "description": "Example Cypress tests going from page objects to app actions",
   "main": "index.js",
   "scripts": {
-    "start-and-test": "concurrently --kill-others npm:start npm:test:replay",
+    "start-and-test": "concurrently --kill-others npm:start npm:test",
     "test": "cypress run",
     "test:replay-gecko": "RECORD_ALL_CONTENT=1 RECORD_REPLAY_METADATA_FILE=$(mktemp) cypress run --browser replay-firefox",
     "test:replay": "RECORD_ALL_CONTENT=1 RECORD_REPLAY_METADATA_FILE=$(mktemp) cypress run --browser replay-chromium",

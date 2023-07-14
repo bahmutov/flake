@@ -34,6 +34,18 @@ var app = app || {}
       router.init('/')
     },
 
+    handleHeaderClick: function () {
+      fetch("https://postman-echo.com/post", {
+        mode: "no-cors",
+        method: "POST",
+        header: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(resp => resp.text())
+        .then(console.log);
+    },
+
     handleNewTodoKeyDown: function (event) {
       if (event.keyCode !== ENTER_KEY) {
         return
@@ -144,7 +156,7 @@ var app = app || {}
       return (
         <div>
           <header className='header'>
-            <h1>todos</h1>
+            <h1 onClick={this.handleHeaderClick}>todos</h1>
             <input
               ref='newField'
               className='new-todo'

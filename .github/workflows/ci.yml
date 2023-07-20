@@ -23,7 +23,8 @@ jobs:
   record:
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-latest]
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+      fail-fast: false
     runs-on: ${{ matrix.platform }}
     outputs:
       recordDuration: ${{steps.end.outputs.recordDuration}}

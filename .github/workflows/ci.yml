@@ -21,7 +21,10 @@ env:
 
 jobs:
   record:
-    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.platform }}
     outputs:
       recordDuration: ${{steps.end.outputs.recordDuration}}
       uploadDuration: ${{steps.end.outputs.uploadDuration}}
@@ -40,6 +43,7 @@ jobs:
           build: npm run lint
           # start the application before running Cypress
           start: npm start
+          cache-key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
         env:
           RECORD_REPLAY_TEST_METRICS: 1
           RECORD_REPLAY_WEBHOOK_URL: ${{ secrets.RECORD_REPLAY_WEBHOOK_URL }}

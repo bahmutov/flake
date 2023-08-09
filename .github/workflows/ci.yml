@@ -26,9 +26,6 @@ jobs:
         platform: [ubuntu-latest, macos-latest, windows-latest]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    outputs:
-      recordDuration: ${{steps.end.outputs.recordDuration}}
-      uploadDuration: ${{steps.end.outputs.uploadDuration}}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -39,124 +36,18 @@ jobs:
         if: always()
         uses: cypress-io/github-action@v4
         with:
-          browser: replay-chromium
+          command: npx @replayio/cypress run --mode diagnostic --browser replay-chromium
           # check the spec types
           build: npm run lint
           # start the application before running Cypress
           start: npm start
           cache-key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
         env:
-          RECORD_REPLAY_TEST_METRICS: 1
-          RECORD_REPLAY_WEBHOOK_URL: ${{ secrets.RECORD_REPLAY_WEBHOOK_URL }}
-          # # These two are here to help with measuring the true overhead by disabling diagnostics
-          # RECORD_REPLAY_DISABLE_ASSERTS: 1
-          # RECORD_REPLAY_DISABLE_SOURCEMAP_COLLECTION: 1
-      - name: Parse test run duration
-        id: set_var
-        if: always()
-        run: |
-          content=`cat duration.json`
-          echo "::set-output name=duration::$content"
-      - name: Set upload start
-        if: always()
-        id: uploadStart
-        run: echo "time=`date +%s`" >> $GITHUB_OUTPUT
+          REPLAY_API_KEY: rwk_3gdLWqm8nrWA7jbPG8aiADVQ7moc0PYGdAEdnKAfzbM
+
       - name: Upload replays ▶️
         if: ${{ always() }}
         uses: replayio/action-upload@v0.4.7
         with:
           api-key: rwk_3gdLWqm8nrWA7jbPG8aiADVQ7moc0PYGdAEdnKAfzbM
           public: true
-      - name: Set duration in output
-        id: end
-        if: always()
-        run: |
-          echo "recordDuration=${{fromJson(steps.set_var.outputs.duration)}}" >> $GITHUB_OUTPUT
-          echo "uploadDuration=$(((`date +%s` - ${{ steps.uploadStart.outputs.time }}) * 1000))" >> $GITHUB_OUTPUT
-  no-record:
-    runs-on: ubuntu-20.04
-    outputs:
-      noRecordDuration: ${{steps.end.outputs.noRecordDuration}}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      # Install NPM dependencies, cache them correctly
-      # and run all Cypress tests
-      # https://github.com/cypress-io/github-action
-      - name: Cypress run
-        if: always()
-        uses: cypress-io/github-action@v4
-        with:
-          browser: 'Replay Chromium'
-          # check the spec types
-          build: npm run lint
-          # start the application before running Cypress
-          start: npm start
-        env:
-          RECORD_REPLAY_TEST_METRICS: 1
-          RECORD_REPLAY_WEBHOOK_URL: ${{ secrets.RECORD_REPLAY_WEBHOOK_URL }}
-          RECORD_REPLAY_DRIVER: /tmp/not-here
-          # These two are here to help with measuring the true overhead by disabling diagnostics
-          RECORD_REPLAY_DISABLE_ASSERTS: 1
-          RECORD_REPLAY_DISABLE_SOURCEMAP_COLLECTION: 1
-      - name: Parse test run duration
-        id: set_var
-        if: always()
-        run: |
-          content=`cat duration.json`
-          echo "::set-output name=duration::$content"
-      - name: Set duration in output
-        id: end
-        if: always()
-        run: |
-          echo "noRecordDuration=${{fromJson(steps.set_var.outputs.duration)}}" >> $GITHUB_OUTPUT
-  original:
-    runs-on: ubuntu-20.04
-    outputs:
-      originalDuration: ${{steps.end.outputs.originalDuration}}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      # Install NPM dependencies, cache them correctly
-      # and run all Cypress tests
-      # https://github.com/cypress-io/github-action
-      - name: Set test start
-        if: always()
-        id: start
-        run: echo "time=`date +%s`" >> $GITHUB_OUTPUT
-      - name: Cypress run
-        if: always()
-        uses: cypress-io/github-action@v4
-        with:
-          # check the spec types
-          build: npm run lint
-          # start the application before running Cypress
-          start: npm start
-      - name: Parse test run duration
-        id: set_var
-        if: always()
-        run: |
-          content=`cat duration.json`
-          echo "::set-output name=duration::$content"
-      - name: Set duration in output
-        if: always()
-        id: end
-        run: echo "originalDuration=${{fromJson(steps.set_var.outputs.duration)}}" >> $GITHUB_OUTPUT
-  upload-benchmarks:
-    name: Upload benchmarks
-    runs-on: ubuntu-latest
-    needs: [record, no-record, original]
-    if: always()
-    steps:
-      - run: |
-          echo "Record Duration: ${{ needs.record.outputs.recordDuration }}"
-          echo "No Record Duration: ${{ needs.no-record.outputs.noRecordDuration }}"
-          echo "Original Duration: ${{ needs.original.outputs.originalDuration }}"
-          echo "Upload Duration: ${{ needs.record.outputs.uploadDuration }}"
-      - name: Fetch API Data 📦
-        uses: JamesIves/fetch-api-data-action@v2
-        # Don't upload metrics for pull requests, so our stats are clean
-        if: ${{ github.ref_name == 'main' }}
-        with:
-          endpoint: 'https://telemetry.replay.io'
-          configuration: '{ "method": "POST", "body": {"event": "Webhook", "source": "metrics", "name": "action-finished-2", "project": "flake", "originalDuration": "${{ needs.original.outputs.originalDuration }}", "recordDuration": "${{ needs.record.outputs.recordDuration }}", "noRecordDuration": "${{ needs.no-record.outputs.noRecordDuration }}", "uploadDuration": "${{ needs.record.outputs.uploadDuration }}"} }'

@@ -20,7 +20,8 @@ var app = app || {}
     getInitialState: function () {
       return {
         nowShowing: app.ALL_TODOS,
-        editing: null
+        editing: null,
+        visible: true,
       }
     },
 
@@ -32,6 +33,9 @@ var app = app || {}
         '/completed': setState.bind(this, { nowShowing: app.COMPLETED_TODOS })
       })
       router.init('/')
+      setTimeout(() => {
+        this.setState({visible: false});
+      }, 10)
     },
 
     handleHeaderClick: function () {
@@ -155,6 +159,7 @@ var app = app || {}
 
       return (
         <div>
+          {this.state.visible ? <button data-test-id="disappearingButton">Disappearing</button> : null}
           <header className='header'>
             <h1 onClick={this.handleHeaderClick}>todos</h1>
             <input

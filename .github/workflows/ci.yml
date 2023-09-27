@@ -51,3 +51,10 @@ jobs:
         with:
           api-key: rwk_3gdLWqm8nrWA7jbPG8aiADVQ7moc0PYGdAEdnKAfzbM
           public: true
+
+      - name: Upload JUnit artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: junit-reporter-xml
+          path: results/*.xml

@@ -5,6 +5,10 @@ const fs = require('fs')
 export default defineConfig({
   projectId: 'ovmwmi',
   e2e: {
+    reporter: 'junit',
+    reporterOptions: {
+      mochaFile: 'results/my-test-output-[hash].xml',
+    },
     env: {
       'cypress-watch-and-reload': {
         watch: 'js/*',

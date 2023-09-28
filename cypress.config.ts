@@ -23,6 +23,7 @@ export default defineConfig({
       cypressReplay.default(on, config, {
         upload: true,
         apiKey: process.env.REPLAY_API_KEY,
+        initMetadataKeys: ['source'],
       })
 
       on('after:run', (afterRun: any) => {

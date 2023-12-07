@@ -36,7 +36,7 @@ jobs:
         if: always()
         uses: cypress-io/github-action@v4
         with:
-          command: npx @replayio/cypress run --mode diagnostic --browser replay-chromium
+          command: npx @replayio/cypress run --browser replay-chromium
           # check the spec types
           build: npm run lint
           # start the application before running Cypress

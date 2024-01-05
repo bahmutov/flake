@@ -24,6 +24,10 @@ export default defineConfig({
         upload: true,
         apiKey: process.env.REPLAY_API_KEY,
         initMetadataKeys: ['source'],
+        filter: r => {
+          console.log('::: recording :::', r)
+          return r.status === "crashed" || r.metadata.test.result === "failed" /* || some random percentage */
+        },
       })
 
       on('after:run', (afterRun: any) => {
